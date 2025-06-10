@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html" charset="UTF-8">
+    <title>Simple graph with Taxonomy and Map</title>
+    <link rel="icon" href="../favicon.ico"/>
+
+    <!-- Import Google Icon Font-->
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+
+    <!-- Import mapbox stylesheet -->
+    <link href='https://api.mapbox.com/mapbox-gl-js/v0.44.1/mapbox-gl.css' rel='stylesheet'/>
+
+    <!-- Let browser know website is optimized for mobile -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+
+    <!-- Add Popoto default CSS styles -->
+    <link rel="stylesheet" href="../node_modules/popoto/dist/popoto.min.css">
+    <link rel="stylesheet" href="../shared.css">
+    <link rel="stylesheet" href="./style.css">
+
+</head>
+
+<body class="ppt-body">
+
+<section class="ppt-section-main">
+    <div class="ppt-section-header">
+        <span class="ppt-header-span">Restaurant and Rumah Makan Graph In Pekanbaru</span>
+    </div>
+    <div class="ppt-container-graph">
+        <div id="popoto-taxonomy" class="ppt-taxo-nav">
+            <!-- Taxonomy navigation will be generated here -->
+        </div>
+
+        <div id="popoto-graph">
+            <!-- Graph is generated here -->
+        </div>
+        
+    </div>
+    <!-- Moved query and cypher containers outside of ppt-container-graph -->
+    <div id="popoto-query" class="ppt-container-query">
+        <div class="section-title">Generated Query</div>
+        <!-- Query viewer is generated here -->
+    </div>
+    <div id="popoto-cypher" class="ppt-container-cypher">
+        <div class="section-title">Executable Cypher</div>
+        <!-- Cypher query viewer will be generated here -->
+    </div>
+    <!-- Moved map-container outside of ppt-container-graph -->
+    <div id="map-container">
+        <div class="section-title-map">Map View</div>
+        <div id="map" class="map"></div>
+        <div id="results-container">
+            <div id="popoto-results">
+                <!-- Results will be displayed here -->
+            </div>
+        </div>
+    </div>
+
+</section>
+
+<!-- Required scripts -->
+<script src="../shared.js" charset="utf-8"></script>
+<script src="../node_modules/d3/dist/d3.min.js" charset="utf-8"></script>
+<script src="../node_modules/neo4j-driver-lite/lib/browser/neo4j-lite-web.min.js" charset="utf-8"></script>
+<script src="../node_modules/popoto/dist/popoto.min.js" charset="utf-8"></script>
+<script src='https://api.mapbox.com/mapbox-gl-js/v0.44.1/mapbox-gl.js'></script>
+<script src="./script.js"></script>
+</body>
+</html>

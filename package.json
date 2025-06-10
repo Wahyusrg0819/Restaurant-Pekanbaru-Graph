@@ -1,0 +1,33 @@
+{
+  "name": "popoto-examples",
+  "version": "0.0.7",
+  "dependencies": {
+    "d3": "7.9.0",
+    "neo4j-driver-lite": "^5.26.0",
+    "popoto": "^4.0.7",
+    "vis": "^4.21.0-EOL"
+  },
+  "nhogs": {
+    "examples": {
+      "list": [
+        "auto-complete",
+        "css-customization",
+        "cypher-viewer",
+        "factual",
+        "fit-text",
+        "marker",
+        "materialize",
+        "multiple-selection",
+        "northwind",
+        "query-viewer",
+        "reset-customization",
+        "results",
+        "save",
+        "simple-graph",
+        "start-from-schema",
+        "taxonomy",
+        "us-regions"
+      ]
+    }
+  }
+}

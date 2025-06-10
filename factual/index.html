@@ -1,0 +1,490 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta http-equiv="Content-Type" content="text/html" charset="UTF-8">
+    <title>Factual</title>
+    <link rel="icon" href="../favicon.ico"/>
+
+    <!-- Import Google Icon Font-->
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+
+    <!-- Import mapbox stylesheet -->
+    <link href='https://api.mapbox.com/mapbox-gl-js/v0.44.1/mapbox-gl.css' rel='stylesheet'/>
+
+    <!-- Let browser know website is optimized for mobile -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+
+    <!-- Add Popoto default CSS styles -->
+    <link rel="stylesheet" href="../node_modules/popoto/dist/popoto.min.css">
+    <link rel="stylesheet" href="../shared.css">
+
+    <style>
+        body{
+            font-family: Roboto, Arial, sans-serif;
+            color: rgb(97, 61, 61);
+        }
+
+        .collapsible-header:focus {
+            outline: 0;
+        }
+
+        .marker {
+            border: none;
+            cursor: pointer;
+            height: 56px;
+            width: 56px;
+            background-image: url(image/node/social/marker.png);
+            background-color: rgba(0, 0, 0, 0);
+        }
+
+        .result-title {
+            cursor: pointer;
+            color: #039be5;
+        }
+
+        .map {
+            width: 100%;
+            height: 100vh;
+        }
+
+        /* Marker tweaks */
+        .mapboxgl-popup-close-button {
+            display: none;
+        }
+
+        .mapboxgl-popup-content {
+            font: 400 15px/22px 'Source Sans Pro', 'Helvetica Neue', Sans-serif;
+            padding: 0;
+            width: 180px;
+        }
+
+        .mapboxgl-popup-content-wrapper {
+            padding: 1%;
+        }
+
+        .mapboxgl-popup-content h3 {
+            background: #91c949;
+            color: #fff;
+            margin: 0;
+            display: block;
+            padding: 10px;
+            border-radius: 3px 3px 0 0;
+            font-weight: 700;
+            margin-top: -15px;
+        }
+
+        .mapboxgl-popup-content h4 {
+            margin: 0;
+            display: block;
+            padding: 10px;
+            font-weight: 400;
+        }
+
+        .mapboxgl-popup-content div {
+            padding: 10px;
+        }
+
+        .mapboxgl-container .leaflet-marker-icon {
+            cursor: pointer;
+        }
+
+        .mapboxgl-popup-anchor-top > .mapboxgl-popup-content {
+            margin-top: 15px;
+        }
+
+        .mapboxgl-popup-anchor-top > .mapboxgl-popup-tip {
+            border-bottom-color: #91c949;
+        }
+
+        .ppt-taxo-ul ul {
+            padding-left: 1em !important;
+        }
+
+        .ppt-taxo-ul {
+            font-size: 14.5px;
+        }
+
+    </style>
+</head>
+<body style="background-color: #2e3138;">
+
+<div class="">
+    <!-- ======================================================================================================= -->
+    <!-- GRAPH QUERY-->
+    <!-- ======================================================================================================= -->
+    <div id="p-collapsible-popoto" class="active">
+        <div class="collapsible-header white-text" style="background-color: #525863; border-bottom: 0;"><i
+                class="ppt-icon ppt-icon-logo" style="color:#8bb71a;"></i> Graph
+            Query
+        </div>
+        <div class="collapsible-body no-padding" style="height: 792px; border-bottom: 0;">
+            <div id="popoto-taxonomy" class="ppt-taxo-nav" style="color: rgb(84, 36, 36); width: 280px">
+            </div>
+            <div id="popoto-graph" class="ppt-div-graph">
+            </div>
+        </div>
+    </div>
+    <!-- ======================================================================================================= -->
+    <!-- QUERY -->
+    <!-- ======================================================================================================= -->
+    <div id="p-collapsible-query" class="active">
+        <div class="collapsible-header white-text" style="background-color: #525863;border-bottom: 0;"><i
+                class="ppt-icon ppt-icon-wrench" style="color:#8bb71a;"></i>Query
+        </div>
+        <div class="collapsible-body no-padding" style="border-bottom: 0;">
+            <div id="popoto-cypher" class="ppt-container-cypher center-align">
+            </div>
+        </div>
+    </div>
+    <!-- ======================================================================================================= -->
+    <!-- RESULTS -->
+    <!-- ======================================================================================================= -->
+    <div id="p-collapsible-results" class="active">
+        <div class="collapsible-header white-text" style="background-color: #525863;border-bottom: 0;"><i
+                class="ppt-icon ppt-icon-user-circle-o" style="color:#8bb71a;"></i>Results&nbsp;
+            <span class="" id="result-total-count">0</span>
+        </div>
+        <div class="collapsible-body no-padding" style="border-bottom: 0;">
+            <div class="row">
+                <div id="popoto-results" class="col s3 cards-container">
+
+                </div>
+                <div id='map' class="map col s9"></div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<footer>
+    <a href="https://www.mapbox.com/help/building-a-store-locator/">https://www.mapbox.com/help/building-a-store-locator/</a>
+</footer>
+
+<!-- Required scripts -->
+<script src="../shared.js" charset="utf-8"></script>
+<script src='https://api.mapbox.com/mapbox-gl-js/v0.44.1/mapbox-gl.js'></script>
+<script src="../node_modules/d3/dist/d3.min.js" charset="utf-8"></script>
+<script src="../node_modules/neo4j-driver-lite/lib/browser/neo4j-lite-web.min.js" charset="utf-8"></script>
+<script src="../node_modules/popoto/dist/popoto.min.js" charset="utf-8"></script>
+<script src="js/map.js"></script>
+<script>
+
+    var driver = neo4j.driver(
+        "neo4j+s://dff437fa.databases.neo4j.io",
+        neo4j.auth.basic("popoto", "popotopassword"),
+    );
+
+    popoto.runner.DRIVER = driver
+
+    popoto.result.RESULTS_PAGE_SIZE = 15;
+    popoto.query.MAX_RESULTS_COUNT = 2000;
+    popoto.graph.USE_FIT_TEXT = true;
+
+    popoto.graph.WHEEL_ZOOM_ENABLED = false;
+
+    popoto.provider.node.Provider = {
+        "Social": {
+            children: ["Bar", "Food and Dining"],
+            returnAttributes: ["name", "id", "address", "postcode", "po_box", "locality", "address_extended", "tel", "fax", "website", "email", "latitude", "longitude"],
+            constraintAttribute: "id",
+            "displayResults": function (resultElement) {
+
+                resultElement
+                    .on("click", function (r) {
+                        flyToResult(r)
+                    });
+
+                resultElement
+                    .append("span")
+                    .attr("class", "result-title")
+                    .text(function (d) {
+                        return d.attributes.name;
+                    });
+
+                resultElement
+                    .append("div")
+                    .text(function (d) {
+                        return d.attributes.locality + " · " + d.attributes.address + " · " + d.attributes.postcode + " · " + d.attributes.tel
+                    });
+
+            }
+        },
+        "Landmark": {
+            returnAttributes: ["name", "id", "address", "postcode", "po_box", "locality", "address_extended", "tel", "fax", "website", "email", "latitude", "longitude"],
+            constraintAttribute: "id"
+        },
+        "Bar": {
+            parent: "Social",
+            children: ["Sport", "Hotel Lounge", "Wine"],
+
+        },
+        "Food and Dining": {
+            parent: "Social",
+            children: ["Bagel and Donut", "Bakery", "Cafe, Coffee and Tea House", "Dessert", "Ice Cream Parlor", "Juice Bar and Smoothie", "Restaurant"],
+
+        },
+        "Restaurant": {
+            parent: "Food and Dining",
+            children: ["American", "Barbecue", "Burger", "Chinese", "Deli", "Diner", "Fast Food", "French", "Indian", "Italian", "Japanese", "Korean", "Mexican", "Middle Eastern", "Pizza", "Seafood", "Steakhouse", "Sushi", "Thai", "Vegan and Vegetarian", "Asian", "Food Truck"],
+
+        },
+        "Neighborhood": {
+            isSearchable: false,
+            returnAttributes: ["name", "id"],
+            constraintAttribute: "id"
+        },
+        "Locality": {
+            isSearchable: false,
+            returnAttributes: ["name"],
+            constraintAttribute: "name"
+        },
+        "Region": {
+            isSearchable: false,
+            returnAttributes: ["code"],
+            constraintAttribute: "code"
+        },
+        "PriceCategory": {
+            isSearchable: false,
+            returnAttributes: ["value"],
+            constraintAttribute: "value"
+        },
+        "Rating": {
+            isSearchable: false,
+            returnAttributes: ["value"],
+            constraintAttribute: "value"
+        },
+        "Year": {
+            isSearchable: false,
+            returnAttributes: ["value"],
+            constraintAttribute: "value"
+        },
+        "Country": {
+            isSearchable: false,
+            returnAttributes: ["code"],
+            constraintAttribute: "code"
+        },
+        "Owner": {
+            isSearchable: false,
+            returnAttributes: ["name"],
+            constraintAttribute: "name"
+        },
+        "Chain": {
+            isSearchable: false,
+            returnAttributes: ["name", "id"],
+            constraintAttribute: "id",
+            "getDisplayType": function (node) {
+                return popoto.provider.node.DisplayTypes.IMAGE;
+            }
+        }
+    };
+
+    popoto.provider.link.Provider = {
+
+        // Customize the text displayed on links:
+        "getTextValue": function (link) {
+            if (link.type === popoto.graph.link.LinkTypes.RELATION || link.type === popoto.graph.link.LinkTypes.SEGMENT) {
+
+                var targetName = "";
+                if (link.type === popoto.graph.link.LinkTypes.SEGMENT) {
+                    targetName = " " + popoto.provider.node.getTextValue(link.target);
+                }
+
+                switch (link.label) {
+                    case "ACTED_IN":
+                        return "Acted in" + targetName;
+                    case "DIRECTED":
+                        return "Directed" + targetName;
+                    case "PRODUCED":
+                        return "Produced" + targetName;
+                    case "WROTE":
+                        return "Wrote" + targetName;
+                    case "FOLLOWS":
+                        return "Follows" + targetName;
+                    case "REVIEWED":
+                        return "Reviewed" + targetName;
+                    default :
+                        return link.label + targetName;
+                }
+            } else {
+                return "";
+            }
+        }
+
+    };
+
+    popoto.result.onTotalResultCount(function (count) {
+        document.getElementById("result-total-count").innerHTML = "(" + count + ")";
+    });
+
+
+    mapboxgl.accessToken = 'pk.eyJ1IjoicG90YXRvdGFydSIsImEiOiJjamU3NXM1bTUwOGRqMnBvNWkzdjByNWV0In0.2NMoyG2zRd8X8BMQht_gAg';
+
+    var map = new mapboxgl.Map({
+        container: 'map',
+        style: 'mapbox://styles/mapbox/streets-v10',
+        center: [-74.0066, 40.7135],
+        zoom: 15.5,
+        pitch: 45,
+        bearing: -17.6,
+        hash: true
+    });
+
+    // map.scrollZoom.disable();
+    // Add zoom and rotation controls to the map.
+    map.addControl(new mapboxgl.NavigationControl());
+
+    // The 'building' layer in the mapbox-streets vector source contains building-height
+    // data from OpenStreetMap.
+    map.on('load', function () {
+        // Insert the layer beneath any symbol layer.
+        var layers = map.getStyle().layers;
+
+        var labelLayerId;
+        for (var i = 0; i < layers.length; i++) {
+            if (layers[i].type === 'symbol' && layers[i].layout['text-field']) {
+                labelLayerId = layers[i].id;
+                break;
+            }
+        }
+
+        map.addLayer({
+            'id': '3d-buildings',
+            'source': 'composite',
+            'source-layer': 'building',
+            'filter': ['==', 'extrude', 'true'],
+            'type': 'fill-extrusion',
+            'minzoom': 15,
+            'paint': {
+                'fill-extrusion-color': '#aaa',
+
+                // use an 'interpolate' expression to add a smooth transition effect to the
+                // buildings as the user zooms in
+                'fill-extrusion-height': [
+                    "interpolate", ["linear"], ["zoom"],
+                    15, 0,
+                    15.05, ["get", "height"]
+                ],
+                'fill-extrusion-base': [
+                    "interpolate", ["linear"], ["zoom"],
+                    15, 0,
+                    15.05, ["get", "min_height"]
+                ],
+                'fill-extrusion-opacity': .6
+            }
+        }, labelLayerId);
+
+        map.addSource('results', {
+            type: 'geojson', data: {
+                "type": "FeatureCollection",
+                "features": []
+            }
+        });
+
+        driver.verifyConnectivity().then(function () {
+            popoto.start("Social");
+        }).catch(function (error) {
+            document.getElementById("modal").style.display = "block";
+            document.getElementById("error-content").innerText = error;
+            console.error(error)
+        })
+    });
+
+    /**
+     * Add a listener on result received to update map.
+     */
+    popoto.result.onResultReceived(
+        function (resultObjects) {
+
+
+            var geojson = createGeojson(resultObjects);
+            map.getSource('results').setData(geojson);
+
+
+            d3.selectAll(".marker").remove();
+
+            // This is where your interactions with the symbol layer used to be
+            // Now you have interactions with DOM markers instead
+            geojson.features.forEach(function (marker, i) {
+                // todo use d3
+
+                // Create an img element for the marker
+                var el = document.createElement('div');
+                el.id = "marker-" + i;
+                el.className = 'marker';
+                // Add markers to the map at all points
+                new mapboxgl.Marker(el, {offset: [0, -23]})
+                    .setLngLat(marker.geometry.coordinates)
+                    .addTo(map);
+
+                el.addEventListener('click', function (e) {
+                    // 1. Fly to the point
+                    flyToStore(marker);
+
+                    // 2. Close all other popups and display popup for clicked store
+                    createPopUp(marker);
+
+                    // // 3. Highlight listing in sidebar (and remove highlight for all other listings)
+                    // var activeItem = document.getElementsByClassName('active');
+
+                    // e.stopPropagation();
+                    // if (activeItem[0]) {
+                    //     activeItem[0].classList.remove('active');
+                    // }
+                    //
+                    // var listing = document.getElementById('listing-' + i);
+                    // listing.classList.add('active');
+
+                });
+            });
+
+            map.fitBounds(computeBounds(geojson), {
+                padding: 20
+            });
+        }
+    );
+
+    /**
+     * Create a Geojson object usable by mapbox from the result list.
+     *
+     * @param resultObjects
+     * @returns {{type: string, features: Array}}
+     */
+    function createGeojson(resultObjects) {
+        var features = [];
+
+        for (var i = 0; i < resultObjects.length; i++) {
+            var longitude = Number(resultObjects[i].attributes.longitude);
+            var latitude = Number(resultObjects[i].attributes.latitude);
+
+            if (longitude && latitude) {
+                features.push({
+                    "resultObject": resultObjects[i],
+                    "type": "Feature",
+                    properties: {
+                        "name": resultObjects[i].attributes.name,
+                        "address": resultObjects[i].attributes.address,
+                        "postcode": resultObjects[i].attributes.postcode,
+                        "locality": resultObjects[i].attributes.locality,
+                        "tel": resultObjects[i].attributes.tel
+                    },
+                    "geometry": {
+                        "type": "Point",
+                        "coordinates": [
+                            longitude,
+                            latitude
+                        ]
+                    }
+                })
+            }
+        }
+
+        return {
+            "type": "FeatureCollection",
+            "features": features
+        };
+    }
+
+
+</script>
+</body>
+</html>

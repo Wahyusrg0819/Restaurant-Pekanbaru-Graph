@@ -1,0 +1,411 @@
+body {
+    font-family: 'Segoe UI', 'Source Sans Pro', 'Helvetica Neue', Arial, sans-serif;
+    color: #f4f6f8;
+    background: linear-gradient(120deg, #232b1b 0%, #2e3138 100%);
+    margin: 0;
+    padding: 0;
+    font-size: 1.05rem;
+    letter-spacing: 0.01em;
+    line-height: 1.6;
+}
+
+.ppt-toolbar {
+    background: #475fa6;
+    box-shadow: 0 2px 8px rgba(71, 95, 166, 0.09);
+    border-radius: 16px;
+    border: 1.5px solid #28345b;
+    position: relative;
+    z-index: 2;
+    transition: box-shadow 0.18s, border 0.18s, background 0.18s;
+    overflow: visible;
+    display: inline-block;
+    width: auto;
+    min-width: 0;
+    margin: 10px; /* Add margin to prevent sticking to the wall */
+}
+
+.ppt-toolbar:hover {
+    background: linear-gradient(135deg, #3a4f88, #1e2b5d);
+}
+
+.ppt-toolbar button {
+    background: linear-gradient(135deg, #46692a 60%, #6bb23c 100%);
+    box-shadow:
+        0 8px 32px rgba(56, 84, 22, 0.30),
+        0 2px 8px rgba(0,0,0,0.09),
+        inset 0 2px 0 #a5de6e;
+    border-radius: 24px 24px 32px 32px;
+    border: 2px solid #5a8e27;
+    backdrop-filter: blur(3px) saturate(1.2);
+    position: relative;
+    z-index: 2;
+    transition: box-shadow 0.23s, border 0.22s, background 0.22s;
+    overflow: visible;
+}
+
+.ppt-toolbar button:hover {
+    background: linear-gradient(135deg, #6bb23c, #46692a);
+}
+
+.ppt-section-header {
+    --x: 50%;
+    --y: 50%;
+    font-size: 1.2rem;
+    color: #ffffff;
+    margin: 18px 0 14px 0;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1.1px;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    background: transparent;
+    padding: 10px 22px 10px 16px;
+    border-left: 5px solid #226b9f;
+    border-radius: 14px 26px 26px 14px;
+    box-shadow: 0 2px 10px rgba(34, 107, 159, 0.12);
+    backdrop-filter: blur(5px);
+    transition: 
+        background 0.22s,
+        color 0.18s,
+        border-left 0.18s,
+        box-shadow 0.17s,
+        background-position 0.2s;
+    position: relative;
+    overflow: hidden;
+    cursor: pointer;
+}
+
+.ppt-section-header::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(255, 255, 255, 0.1);
+    pointer-events: none;
+    transition: opacity 0.3s;
+    opacity: 0;
+}
+
+.ppt-section-header:hover::after {
+    opacity: 1;
+    background: radial-gradient(circle at var(--x) var(--y), rgba(255, 255, 255, 0.2), transparent);
+}
+
+.ppt-section-header:hover {
+    background-position: var(--x) var(--y);
+}
+
+.ppt-section-header {
+    --x: 50%;
+    --y: 50%;
+}
+
+.ppt-section-header:hover {
+    background-position: var(--x) var(--y);
+}
+
+.ppt-section-header {
+    --x: 50%;
+    --y: 50%;
+}
+
+.ppt-section-header:hover {
+    background-position: var(--x) var(--y);
+}
+
+.ppt-section-header {
+    --x: 50%;
+    --y: 50%;
+}
+
+.ppt-section-header:hover {
+    background-position: var(--x) var(--y);
+}
+
+.ppt-section-header {
+    --x: 50%;
+    --y: 50%;
+}
+
+.ppt-section-header:hover {
+    background-position: var(--x) var(--y);
+}
+
+.ppt-svg-graph {
+    height: 100%; /* Fill grid cell height */
+    width: 100%;  /* Fill grid cell width */
+}
+
+.ppt-container-graph {
+    height: 600px;
+    display: grid;
+    grid-template-columns: 250px 1fr; /* As specified */
+    grid-template-rows: 1fr; /* Single row for current children */
+    grid-template-areas: 
+        "taxonomy graph"; /* Corrected for current children */
+    width: 100%; /* Full screen width */
+    margin: 20px 0; /* Vertical margin, no horizontal auto margin */
+    box-sizing: border-box; /* Include padding and border in the element's total width and height */
+}
+
+.ppt-container-query, .ppt-container-cypher {
+    background: linear-gradient(120deg, #2c3e50 0%, #4b79a1 100%);
+    color: #ecf0f1;
+}
+
+.ppt-container-query {
+    box-shadow: 0 4px 24px rgba(44, 62, 80, 0.19), 0 2px 8px rgba(75, 121, 161, 0.08);
+    border: 2px solid #1c2833;
+}
+
+.ppt-taxo-nav {
+    grid-area: taxonomy;
+    border-right: 1px solid #e8eaed;
+    background-color: #3a4255;
+    padding: 15px 0;
+    overflow-y: auto;
+    height: 600px;
+    box-shadow:
+        0 4px 24px rgba(58, 66, 85, 0.22),
+        2px 0 12px rgba(40, 44, 60, 0.13),
+        inset 0 1.5px 0 #8e99b2;
+    backdrop-filter: blur(1.5px);
+    position: relative;
+    z-index: 2;
+    display: flex;
+    flex-direction: column;
+}
+
+.ppt-taxo-ul {
+    list-style: none;
+    margin: 0;
+    padding: 4px 12px;
+    background-color: #2e3138;
+    font-size: 15px;
+    color: #d6e3f7;
+}
+
+.ppt-taxo-li {
+    margin-bottom: 6px;
+    padding: 6px 18px;
+    transition: background-color 0.3s, color 0.3s;
+    border-radius: 7px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    min-height: 36px;
+    background-color: transparent;
+}
+
+.ppt-taxo-span {
+    margin-left: 13px;
+    font-weight: 600;
+    letter-spacing: 0.01em;
+    color: #d6e3f7;
+}
+
+.ppt-taxo-li:hover, .ppt-taxo-li.active {
+    background-color: #354052;
+    color: #ffffff;
+}
+
+#popoto-graph {
+    grid-area: graph;
+    border-bottom: 1px solid #e8eaed;
+}
+
+#map-container {
+grid-area: map;
+position: relative;
+height: 100%;
+min-height: 400px;
+overflow: hidden;
+display: flex;
+flex-direction: column;
+justify-content: center;
+align-items: center;
+border-radius: 16px;
+transition: box-shadow 0.22s, transform 0.18s;
+margin-top: 20px;
+}
+
+.map {
+    width: 100%;
+    height: 90%;
+    min-height: 350px;
+}
+
+.mapboxgl-canvas {
+    width: 100vw;
+    max-width: 100%;
+    height: 100%;
+    background: #e7f8ea;
+    border-radius: 16px;
+    box-shadow: 0 8px 32px rgba(70, 105, 42, 0.17), 0 2px 8px rgba(90, 190, 39, 0.11), 0 12px 36px 0 rgba(30, 40, 45, 0.09), 4px 8px 0 0 #5a8e27;
+    transition: box-shadow 0.22s, transform 0.18s;
+    outline: none;
+}
+
+
+
+.section-title {
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    font-size: 1.05rem;
+    color: #37501a;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1.1px;
+    gap: 14px;
+    background: linear-gradient(90deg, #e7f6d5 65%, #cde4b5 100%);
+    padding: 10px 22px 10px 16px;
+    border-left: 5px solid #6bb23c;
+    border-radius: 14px 26px 26px 14px;
+    box-shadow: 0 2px 10px rgba(90, 190, 39, 0.09);
+    margin: 18px 0 14px 0;
+    width: fit-content;
+    max-width: 100%;
+}
+
+/* Map marker styling */
+.marker {
+    border: none;
+    cursor: pointer;
+    height: 36px;
+    width: 36px;
+    background-image: url(../factual/image/node/social/restaurant.png);
+    background-color: rgba(0, 0, 0, 0);
+    background-size: contain;
+    animation: bounce 2s infinite;
+}
+
+.result-title {
+    cursor: pointer;
+    color: #2193b0;
+    font-weight: 500;
+}
+
+
+
+.section-title-map {
+    width: 100vw;
+    max-width: 100%;
+    box-sizing: border-box;
+    font-size: 0.98rem;
+    color: #46692a;
+    margin: 18px 0 14px 0;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    background: linear-gradient(90deg, #e7f6d5 65%, #cde4b5 100%);
+    padding: 9px 22px 9px 18px;
+    border-left: 5px solid #6bb23c;
+    border-radius: 14px 26px 26px 14px;
+    box-shadow: 0 2px 10px rgba(90, 190, 39, 0.08);
+}
+
+/* Marker tweaks */
+.mapboxgl-popup-close-button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: absolute;
+    top: 10px;
+    right: 12px;
+    width: 26px;
+    height: 26px;
+    border: none;
+    background: linear-gradient(135deg, #6bb23c 60%, #46692a 100%);
+    color: #fff;
+    border-radius: 50%;
+    font-size: 17px;
+    font-weight: bold;
+    cursor: pointer;
+    box-shadow: 0 2px 8px rgba(71, 95, 166, 0.13);
+    transition: background 0.18s, color 0.18s, box-shadow 0.16s;
+    z-index: 10;
+    outline: none;
+}
+.mapboxgl-popup-close-button:hover,
+.mapboxgl-popup-close-button:focus {
+    background: linear-gradient(135deg, #46692a 70%, #6bb23c 100%);
+    color: #fcffe6;
+    box-shadow: 0 4px 16px rgba(90, 190, 39, 0.18);
+}
+
+.mapboxgl-popup-content {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    font-family: 'Segoe UI', 'Source Sans Pro', 'Helvetica Neue', Arial, sans-serif;
+    font-size: 15px;
+    font-weight: 400;
+    line-height: 1.6;
+    padding: 20px 22px 16px 22px;
+    min-width: 180px;
+    max-width: 340px;
+    background: linear-gradient(135deg, #5e9448 68%, #89bf6e 100%);
+    color: #f6faf6;
+    border-radius: 14px;
+    border: 1.5px solid #32511c;
+    box-shadow:
+        0 4px 16px rgba(30,40,45,0.14),
+        0 1.5px 0 #8ecf6e;
+    transform: perspective(220px) rotateX(1.2deg) scale(0.99);
+    transition: box-shadow 0.16s, transform 0.20s;
+    overflow-wrap: break-word;
+    word-break: break-word;
+    white-space: pre-line;
+    position: relative;
+    box-sizing: border-box;
+    gap: 10px;
+}
+
+.mapboxgl-popup-content-wrapper {
+    padding: 1%;
+}
+
+.mapboxgl-popup-content h3 {
+    background: #2193b0;
+    color: #010000;
+    margin: 0;
+    display: block;
+    padding: 10px;
+    border-radius: 3px 3px 0 0;
+    font-weight: 700;
+    margin-top: -15px;
+}
+
+.mapboxgl-popup-content h4 {
+    margin: 0;
+    display: block;
+    padding: 10px;
+    font-weight: 400;
+}
+
+#results-container {
+    display: flex;
+    flex-direction: column;
+    max-height: 600px;
+    height: 600px;
+    overflow-y: auto;
+    margin-top: 10px;
+}
+
+#popoto-results {
+    padding: 10px;
+}
+
+.ppt-result {
+    background: linear-gradient(120deg, #f6d365 0%, #fda085 100%);
+    box-shadow: 0 4px 24px rgba(253, 160, 133, 0.19), 0 2px 8px rgba(246, 211, 101, 0.08);
+    border: 2px solid #b97b0f;
+    color: #312003;
+}
